@@ -12,7 +12,7 @@
           whitelist:
             - Gemfile
       stages:
-        - build
+        - build:
           clean_workspace: true
           jobs:
             build-docker:
