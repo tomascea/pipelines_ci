@@ -1,18 +1,98 @@
 ---
-    format_version: 2
-    pipelines:
-      java-app:
-        group: services
-        lock_behavior: unlockWhenFinished
-        label_template: "${java_app}"
-        materials:
-          api-automation:
-            git: https://github.com/tomascea/api_tests_ci.git
-            branch: main
-            shallow_clone: true
-            auto_update: true
-            whitelist:
-              - Gemfile
-        environment_variables:
-          DOCKERFILE_NAME: Dockerfile_base
-        stages: *build
+format_version: 2
+# common:
+#   build: &build
+#     - build:
+#         clean_workspace: true
+#         jobs:
+#           docker-build:
+#             tasks:
+#               - exec:
+#                   command: bash
+#                   arguments:
+#                     - -c
+#                     - docker build -t api_test_base . -f ${DOCKERFILE_NAME}
+
+pipelines:
+  java-app:
+    group: services
+    lock_behavior: unlockWhenFinished
+    label_template: "${java_app}"
+    materials:
+      java_app:
+        git: https://github.com/mtararujs/api_tests_ci.git
+        branch: main
+        shallow_clone: true
+        auto_update: true
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Building java application"
+      - deploy-dev:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Deployment on DEV"
+      - test-dev:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Testing on DEV"
+      - deploy-int:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Deployment on INT"
+      - test-int:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Testing on INT"
+      - deploy-prd:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Deployment on PRD"
+      - test-prd:
+          clean_workspace: true
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -c
+                      - echo "Testing on PRD"
+
