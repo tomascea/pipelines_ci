@@ -47,8 +47,8 @@
         label_template: "${java_app}"
         materials:
           java_app:
-            git: https://github.com/mtararujs/api_tests_ci.git
-            branch: main
+            git: https://github.com/tomascea/api_tests_ci.git
+            branch: master
             shallow_clone: true
             auto_update: true
         stages:
