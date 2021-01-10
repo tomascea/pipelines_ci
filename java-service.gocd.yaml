@@ -1,100 +1,128 @@
 ---
-format_version: 2
-common:
-  deploy-tasks: &deploy-tasks
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - echo "Deployment on ${ENV_NAME}"
+    format_version: 2
+    common:
+      deploy-tasks: &deploy-tasks
+        - exec:
+            command: bash
+            arguments:
+              - -c
+              - echo "Deployment on ${ENV_NAME}"
 
-  test-tasks: &test-tasks
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - echo "Running tests on ${ENV_NAME}"
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - docker run --network=host -d -t --name api_test_executor_${ENV_NAME} api_test_executor:latest
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - docker exec api_test_executor_${ENV_NAME} cucumber --tags=@${ENV_NAME} --format progress -c --format html --out test-output/report.html
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - docker cp api_test_executor_${ENV_NAME}:/usr/src/api-tests/test-output/report.html report_${environment}.html
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - docker stop api_test_executor_${ENV_NAME}
-    - exec:
-        command: bash
-        arguments:
-          - -c
-          - docker rm api_test_executor_${ENV_NAME}
+      test-tasks: &test-tasks
+        - exec:
+            command: bash
+            arguments:
+              - -c
+              - echo "Running tests on ${ENV_NAME}"
+        - exec:
+            command: bash
+            arguments:
+              - -c
+              - docker run --network=host -d -t --name api_test_executor_${ENV_NAME} api_test_executor:latest
+        - exec:
+            command: bash
+            arguments:
+              - -c
+              - docker exec api_test_executor_${ENV_NAME} cucumber --tags=@${ENV_NAME} --format progress -c --format html --out test-output/report.html
+        - exec:
+            run_if: any
+            command: bash
+            arguments:
+              - -c
+              - docker cp api_test_executor_${ENV_NAME}:/usr/src/api-tests/test-output/report.html report_${environment}.html
+        - exec:
+            run_if: any
+            command: bash
+            arguments:
+              - -c
+              - docker stop api_test_executor_${ENV_NAME}
+        - exec:
+            run_if: any
+            command: bash
+            arguments:
+              - -c
+              - docker rm api_test_executor_${ENV_NAME}     
 
-pipelines:
-  java-app:
-    group: services
-    lock_behavior: unlockWhenFinished
-    label_template: "${java_app}"
-    materials:
-      java_app:
-        git: https://github.com/tomascea/api_tests_ci.git
-        branch: main
-        shallow_clone: true
-        auto_update: true
-    stages:
-      - build:
-          clean_workspace: true
-          jobs:
-            build:
-              tasks:
-                - exec:
-                    command: bash
-                    arguments:
-                      - -c
-                      - echo "Building java application"
-      - deploy-dev:
-          environment_variables:
-            ENV_NAME: dev
-          clean_workspace: true
-          jobs:
-            deploy:
-              tasks: *deploy-tasks
-      - test-dev:
-          clean_workspace: true
-          jobs:
-            build:
-              tasks: *test-tasks
-      - deploy-int:
-          environment_variables:
-            ENV_NAME: int
-          clean_workspace: true
-          jobs:
-            deploy:
-              tasks: *deploy-tasks
-      - test-int:
-          clean_workspace: true
-          jobs:
-            build:
-              tasks: *test-tasks
-      - deploy-prd:
-          environment_variables:
-            ENV_NAME: prd
-          clean_workspace: true
-          jobs:
-            deploy:
-              tasks: *deploy-tasks
-      - test-prd:
-          clean_workspace: true
-          jobs:
-            build:
-              tasks: *test-tasks
+    pipelines:
+      java-app:
+        group: services
+        lock_behavior: unlockWhenFinished
+        label_template: "${java_app}"
+        materials:
+          java_app:
+            git: https://github.com/mtararujs/api_tests_ci.git
+            branch: main
+            shallow_clone: true
+            auto_update: true
+        stages:
+          - build:
+              clean_workspace: true
+              jobs:
+                build:
+                  tasks:
+                    - exec:
+                        command: bash
+                        arguments:
+                          - -c
+                          - echo "Building java application"
+          - deploy-dev:
+              environment_variables:
+                ENV_NAME: dev
+              clean_workspace: true
+              jobs:
+                deploy:
+                  tasks: *deploy-tasks
+          - test-dev:
+              environment_variables:
+                ENV_NAME: dev
+              clean_workspace: true
+              jobs:
+                test:
+                  artifacts:
+                    - build:
+                        source: report_dev.html
+                        destination: test-output/
+                  tabs:
+                    Report: test-output/report_dev.html
+                  tasks: *test-tasks
+          - deploy-int:
+              environment_variables:
+                ENV_NAME: int
+              clean_workspace: true
+              jobs:
+                deploy:
+                  tasks: *deploy-tasks
+          - test-int:
+              environment_variables:
+                ENV_NAME: int
+              clean_workspace: true
+              jobs:
+                test:
+                  artifacts:
+                    - build:
+                        source: report_int.html
+                        destination: test-output/
+                  tabs:
+                    Report: test-output/report_int.html
+                  tasks: *test-tasks
+          - deploy-prd:
+              environment_variables:
+                ENV_NAME: prd
+              clean_workspace: true
+              jobs:
+                deploy:
+                  tasks: *deploy-tasks
+          - test-prd:
+              environment_variables:
+                ENV_NAME: prd
+              clean_workspace: true
+              jobs:
+                test:
+                  artifacts:
+                    - build:
+                        source: report_prd.html
+                        destination: test-output/
+                  tabs:
+                    Report: test-output/report_prd.html
+                  tasks: *test-tasks
+
