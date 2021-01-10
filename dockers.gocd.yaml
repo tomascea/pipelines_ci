@@ -1,0 +1,24 @@
+---
+  format_version: 2
+  pipelines:
+    docker-base:
+      group: dockers
+      lock_behaviour: unlockWhenFinished
+      label_template: "${count}"
+      materials:
+          git: https://github.com/tomascea/api_tests_ci.git
+          branch: main
+          auto_update: true
+          whitelist:
+            - Gemfile
+      stages:
+        - build
+          clean_workspace: true
+          jobs:
+            build-docker:
+              tasks:
+                - exec:
+                  command: bash
+                  arguments:
+                    - -c
+                    - docker build -t api_test_base . -f Dockerfile_base
