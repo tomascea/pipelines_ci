@@ -7,7 +7,7 @@
       label_template: "${count}"
       materials:
           git: https://github.com/tomascea/api_tests_ci.git
-          branch: main
+          branch: master
           auto_update: true
           whitelist:
             - Gemfile
