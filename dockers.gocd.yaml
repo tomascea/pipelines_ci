@@ -6,11 +6,12 @@ pipelines:
     lock_behaviour: unlockWhenFinished
     label_template: "${count}"
     materials:
-      git: https://github.com/tomascea/api_tests_ci.git
-      branch: master
-      auto_update: true
-      whitelist:
-        - Gemfile
+      api-automation:
+        git: https://github.com/tomascea/api_tests_ci.git
+        branch: master
+        auto_update: true
+        whitelist:
+          - Gemfile
     stages:
       - build:
         clean_workspace: true
