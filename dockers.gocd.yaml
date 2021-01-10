@@ -17,8 +17,8 @@
           jobs:
             build-docker:
               tasks:
-                  exec:
-                  command: bash
-                  arguments:
-                    - -c
-                    - docker build -t api_test_base . -f Dockerfile_base
+                - exec:
+                command: bash
+                arguments:
+                  - -c
+                  - docker build -t api_test_base . -f Dockerfile_base
