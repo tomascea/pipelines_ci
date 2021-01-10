@@ -2,7 +2,7 @@
 format_version: 2
 pipelines:
   api-test-docker-base:
-    group: utils
+    group: dockers
     lock_behavior: unlockWhenFinished
     label_template: "${api-automation}"
     materials:
@@ -27,7 +27,7 @@ pipelines:
                       - -c
                       - docker build -t api_test_base . -f Dockerfile_base
   api-test-docker-executor:
-    group: utils
+    group: dockers
     lock_behavior: unlockWhenFinished
     label_template: "${api-automation}"
     materials:
