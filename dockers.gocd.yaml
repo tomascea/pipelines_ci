@@ -8,10 +8,10 @@ common:
           docker-build:
             tasks:
               - exec:
-                command: bash
-                arguments:
-                  - -c
-                  - docker build -t api_test_base . -f ${DOCKERFILE_NAME}
+                  command: bash
+                  arguments:
+                    - -c
+                    - docker build -t api_test_base . -f ${DOCKERFILE_NAME}
 
 pipelines:
   api-test-docker-base:
