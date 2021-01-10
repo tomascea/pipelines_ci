@@ -1,0 +1,18 @@
+---
+    format_version: 2
+    pipelines:
+      java-app:
+        group: services
+        lock_behavior: unlockWhenFinished
+        label_template: "${java_app}"
+        materials:
+          api-automation:
+            git: https://github.com/tomascea/api_tests_ci.git
+            branch: main
+            shallow_clone: true
+            auto_update: true
+            whitelist:
+              - Gemfile
+        environment_variables:
+          DOCKERFILE_NAME: Dockerfile_base
+        stages: *build

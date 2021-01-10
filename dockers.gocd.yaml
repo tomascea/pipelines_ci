@@ -20,7 +20,7 @@ pipelines:
     label_template: "${api-automation}"
     materials:
       api-automation:
-        git: https://github.com/mtararujs/api_tests_ci.git
+        git: https://github.com/tomascea/api_tests_ci.git
         branch: main
         shallow_clone: true
         auto_update: true
@@ -36,7 +36,7 @@ pipelines:
     label_template: "${api-automation}"
     materials:
       api-automation:
-        git: https://github.com/mtararujs/api_tests_ci.git
+        git: https://github.com/tomascea/api_tests_ci.git
         branch: main
         shallow_clone: true
         auto_update: true
