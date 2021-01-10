@@ -20,7 +20,7 @@ format_version: 2
       materials:
         api-automation:
           git: https://github.com/tcea/api_tests_ci.git
-          branch: main
+          branch: master
           shallow_clone: true
           auto_update: true
           whitelist:
@@ -36,7 +36,7 @@ format_version: 2
       materials:
         api-automation:
           git: https://github.com/tcea/api_tests_ci.git
-          branch: main
+          branch: master
           shallow_clone: true
           auto_update: true
           whitelist:
