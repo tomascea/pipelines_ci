@@ -1,17 +1,17 @@
 ---
   format_version: 2
-    common:
-      build: &build
-               - build:
-               clean_workspace: true
-               jobs:
-                 docker-build:
-                   tasks:
-                     - exec:
-                         command: bash
-                         arguments:
-                           - -c
-                           - docker build -t api_test_base . -f ${DOCKERFILE_NAME}
+  common:
+    build: &build
+       - build:
+       clean_workspace: true
+       jobs:
+         docker-build:
+           tasks:
+             - exec:
+                 command: bash
+                 arguments:
+                   - -c
+                   - docker build -t api_test_base . -f ${DOCKERFILE_NAME}
 
     pipelines:
       api-test-docker-base:
